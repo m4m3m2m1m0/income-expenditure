@@ -2,19 +2,7 @@ import React, { useState } from 'react';
 import { useGet, usePost } from '../../shared/api/hooks/http.hooks';
 
 const Navbar = () => {
-  const { response, loading, error } = useGet('http://localhost:5000', {
-    query: { id: 2 },
-  });
-
-  usePost(
-    'http://localhost:5000',
-    { test: 1 },
-    {
-      onSuccess: (res) => {
-        console.log(res);
-      },
-    }
-  );
+  const { response, loading, error } = useGet('http://localhost:5000');
 
   if (loading) {
     return <p>loading</p>;
@@ -22,7 +10,6 @@ const Navbar = () => {
 
   if (response) {
     return <p>{response.data}</p>;
-    // return response.data.map((d) => <p key={d.id}>{d.id}</p>);
   }
 
   if (error) {
