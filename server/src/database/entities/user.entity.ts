@@ -4,27 +4,21 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('User')
 export class User {
   @PrimaryGeneratedColumn()
-  Id: number;
+  id: number;
 
   @Column({
     length: 255,
   })
-  UserName: string;
+  userName: string;
 
   @Column({
     length: 255,
   })
-  Email: string;
-
-  @Column({
-    length: 255,
-  })
-  @Exclude()
-  Password: string;
+  email: string;
 
   @Column({
     length: 255,
   })
   @Exclude()
-  Hash: string;
+  password: string;
 }

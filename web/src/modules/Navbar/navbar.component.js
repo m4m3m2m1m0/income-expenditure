@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
-import { useGet, usePost } from '../../shared/api/hooks/http.hooks';
+import { Button } from 'antd';
+import React, { useCallback, useContext } from 'react';
+import styled from 'styled-components';
+import { AuthContext } from '../../contexts/auth.context';
+
+const NavbarContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  color: white;
+  align-items: center;
+  height: 100%;
+`;
+
+const NavButton = styled(Button)`
+  color: white;
+  &:hover {
+    color: #8acee3;
+  }
+`;
 
 const Navbar = () => {
-  const { response, loading, error } = useGet('http://localhost:5000');
+  const authContext = useContext(AuthContext);
 
-  if (loading) {
-    return <p>loading</p>;
-  }
-
-  if (response) {
-    return <p>{response.data}</p>;
-  }
-
-  if (error) {
-    return <p>error</p>;
-  }
+  const onLogout = useCallback(() => {
+    authContext.logout();
+  }, [authContext]);
 
   return (
-    <div>
-      <p>test</p>
-    </div>
+    <NavbarContainer>
+      <NavButton type="text" onClick={onLogout}>
+        Logout
+      </NavButton>
+    </NavbarContainer>
   );
 };
 

@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import { User } from 'src/database/entities/user.entity';
+import { compareSync, genSalt, genSaltSync, hash, hashSync } from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -11,11 +11,30 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async getUser(id: number): Promise<User | User[]> {
-    if (id) {
-      return this.usersRepository.findOne(id);
+  async addUser(user: User): Promise<void> {
+    const userCount = await this.usersRepository.count({
+      where: [{ userName: user.userName }, { email: user.email }],
+    });
+
+    if (userCount) {
+      throw new HttpException(
+        'User with the same email or user name already exists',
+        HttpStatus.CONFLICT,
+      );
     }
 
-    return this.usersRepository.find();
+    var hashedPassword = hashSync(user.password, 10);
+    user.password = hashedPassword;
+
+    await this.usersRepository.save(user);
+  }
+
+  async findById(id: number): Promise<User> {
+    // return this.usersRepository.findByIds(id);
+    return null;
+  }
+
+  async findByName(userName: string): Promise<User> {
+    return this.usersRepository.findOne({ where: { userName: userName } });
   }
 }
