@@ -11,18 +11,23 @@ import { AUTH_TOKEN, REFRESH_TOKEN } from '../shared/const/local-storage.const';
 export const AuthContext = createContext({
   isAuth: false,
   payload: null,
+  token: {},
+  refreshToken: {},
   login: () => {},
   logout: () => {},
+  setToken: () => {},
+  setRefreshToken: () => {},
 });
 
 const AuthContextProvider = (props) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [payload, setPayload] = useState({});
-  const [token, setToken, removeToken] = useLocalStorage(AUTH_TOKEN, null);
-  const [refreshToken, setRefreshToken, removeRefreshToken] = useLocalStorage(
-    REFRESH_TOKEN,
-    null
-  );
+  const [token, setTokenState, removeToken] = useLocalStorage(AUTH_TOKEN, null);
+  const [
+    refreshToken,
+    setRefreshTokenState,
+    removeRefreshToken,
+  ] = useLocalStorage(REFRESH_TOKEN, null);
 
   const setAuthentication = useCallback((token) => {
     const payload = jwt(token.token);
@@ -37,18 +42,38 @@ const AuthContextProvider = (props) => {
   }, [setIsAuthenticated, removeToken, removeRefreshToken]);
 
   useEffect(() => {
-    if (token && token.token && !isExpired(refreshToken)) {
+    if (token && token.token && refreshToken && !isExpired(refreshToken)) {
       setAuthentication(token);
     } else {
       logoutHandler();
     }
   }, [token, refreshToken, setAuthentication, logoutHandler]);
 
+  const setToken = useCallback(
+    (tokenStr) => {
+      const token = getTokenObjectToSave(tokenStr);
+      setTokenState(token);
+
+      return token;
+    },
+    [setTokenState]
+  );
+
+  const setRefreshToken = useCallback(
+    (refreshTokenStr) => {
+      const token = getTokenObjectToSave(refreshTokenStr);
+      setRefreshTokenState(token);
+
+      return token;
+    },
+    [setRefreshTokenState]
+  );
+
   const loginHandler = useCallback(
     (token) => {
       setAuthentication(token);
-      setToken(getTokenObjectToSave(token.token));
-      setRefreshToken(getTokenObjectToSave(token.refreshToken));
+      setToken(token.token);
+      setRefreshToken(token.refreshToken);
     },
     [setAuthentication, setToken, setRefreshToken]
   );
@@ -60,6 +85,10 @@ const AuthContextProvider = (props) => {
         logout: logoutHandler,
         isAuth: isAuthenticated,
         payload: payload,
+        token: token,
+        refreshToken: refreshToken,
+        setToken: setToken,
+        setRefreshToken: setRefreshToken,
       }}
     >
       {props.children}

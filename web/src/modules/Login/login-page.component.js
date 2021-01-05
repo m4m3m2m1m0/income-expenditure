@@ -39,8 +39,6 @@ const LoginPage = () => {
       const response = await logMutation.mutateAsync(credentials);
 
       authContext.login(response.data);
-
-      setRedirectToHomePage(true);
     },
     [authContext, logMutation, setRedirectToHomePage]
   );

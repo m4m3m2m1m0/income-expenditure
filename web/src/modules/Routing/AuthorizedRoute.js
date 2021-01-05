@@ -5,7 +5,7 @@ import { LOGIN_ROUTE } from '../../shared/const/routes.const';
 
 const AuthorizedRoute = ({ component: Component, ...routeProps }) => {
   const authContext = useContext(AuthContext);
-  console.log(authContext);
+
   if (!authContext.isAuth) {
     return (
       <Redirect

@@ -1,7 +1,6 @@
 import buildUrl from 'build-url';
 
 const pathBuilder = (path, queryParams, fragment, pathParams) => {
-  console.log(queryParams);
   let fullPath = buildUrl('', {
     path: path,
     hash: fragment,

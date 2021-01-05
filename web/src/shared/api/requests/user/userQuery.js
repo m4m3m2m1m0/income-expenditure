@@ -1,5 +1,4 @@
-import baseAPI from '../../base-api';
-import pathBuilder from '../../../utils/pathBuilder';
+import { baseAPI } from '../../../components/api-client.component';
 
 export const USER_QUERY_NAME = 'userQuery';
 

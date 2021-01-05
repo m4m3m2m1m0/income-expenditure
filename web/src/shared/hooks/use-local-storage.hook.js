@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const useLocalStorage = (key, initialValue) => {
   const [storedValue, setStoredValue] = useState(() => {
@@ -6,15 +6,15 @@ const useLocalStorage = (key, initialValue) => {
     return item ? JSON.parse(item) : initialValue;
   });
 
-  const setValue = (value) => {
+  const setValue = useCallback((value) => {
     const valueToStore = value instanceof Function ? value(storedValue) : value;
     setStoredValue(valueToStore);
     localStorage.setItem(key, JSON.stringify(valueToStore));
-  };
+  }, []);
 
-  const removeValue = () => {
+  const removeValue = useCallback(() => {
     localStorage.removeItem(key);
-  };
+  }, []);
 
   return [storedValue, setValue, removeValue];
 };

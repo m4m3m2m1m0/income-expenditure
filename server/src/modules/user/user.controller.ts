@@ -6,19 +6,23 @@ import {
   Get,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { User } from 'src/database/entities/user.entity';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  // @Get()
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // async getUsers(@Query('id') id: number): Promise<User | User[]> {
-  //   return this.userService.getUser(id);
-  // }
+  @Get()
+  @UseGuards(AuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getUsers(@Query('id') id: number): Promise<User | User[] | number> {
+    // return this.userService.findById(1);
+    return Math.random();
+  }
 
   @Post('register')
   @UseInterceptors(ClassSerializerInterceptor)

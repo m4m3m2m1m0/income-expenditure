@@ -7,7 +7,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import routes from '../Routing/routes';
 import AuthorizedRoute from '../Routing/AuthorizedRoute';
 import PublicRoute from '../Routing/PublicRoute';
-import AuthContextProvider from '../../contexts/auth.context';
+import AuthContextProvider, { AuthContext } from '../../contexts/auth.context';
+import ApiClient from '../../shared/components/api-client.component';
 
 const { Header, Content, Footer } = Layout;
 
@@ -32,24 +33,28 @@ const routeComponents = routes.map((routeConfig, index) => {
 const App = () => {
   return (
     <AuthContextProvider>
-      <QueryClientProvider client={queryClient}>
-        <Layout>
-          <Content>
-            <Router>
-              <Header>
-                <Navbar />
-              </Header>
-              <Suspense fallback={<div></div>}>
-                <Switch>
-                  {routeComponents}
-                  <Redirect to="/" />
-                </Switch>
-              </Suspense>
-            </Router>
-          </Content>
-          <Footer>&copy; {new Date().getFullYear()} Income/Expenditure</Footer>
-        </Layout>
-      </QueryClientProvider>
+      <ApiClient authContext={AuthContext}>
+        <QueryClientProvider client={queryClient}>
+          <Layout>
+            <Content>
+              <Router>
+                <Header>
+                  <Navbar />
+                </Header>
+                <Suspense fallback={<div></div>}>
+                  <Switch>
+                    {routeComponents}
+                    <Redirect to="/" />
+                  </Switch>
+                </Suspense>
+              </Router>
+            </Content>
+            <Footer>
+              &copy; {new Date().getFullYear()} Income/Expenditure
+            </Footer>
+          </Layout>
+        </QueryClientProvider>
+      </ApiClient>
     </AuthContextProvider>
   );
 };

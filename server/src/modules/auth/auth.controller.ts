@@ -20,4 +20,10 @@ export class AuthController {
   async login(@Body() credentials: LoginCredentials): Promise<Token> {
     return this.authService.getToken(credentials);
   }
+
+  @Post('refreshToken')
+  @UseInterceptors(ClassSerializerInterceptor)
+  async refreshToken(@Body() token: Token): Promise<Token> {
+    return this.authService.refreshToken(token);
+  }
 }

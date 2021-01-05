@@ -26,19 +26,17 @@ export class AuthService {
     return this.generateToken(user);
   }
 
-  // async refreshToken(token: string): Promise<Token | ErrorResponse> {
-  //   const userToken = this.checkToken(token, process.env.JWT_REFRESH_SECRET);
-  //   if (!userToken) {
-  //     return new ErrorResponse('Invalid token.');
-  //   }
+  async refreshToken(token: Token): Promise<Token> {
+    const payload = this.verifyToken(token.refreshToken, true);
 
-  //   const user = await this.usersService.findById(userToken._id);
-  //   if (!user) {
-  //     return new ErrorResponse('User has no access.');
-  //   }
+    const user = await this.userService.findById(payload.id);
 
-  //   return this.generateToken(user);
-  // }
+    if (user) {
+      return this.generateToken(user);
+    }
+
+    throw new HttpException('Cannot refresh the token', HttpStatus.CONFLICT);
+  }
 
   generateToken(user: User): Token {
     const tokenPayload: ICurrentUser = {
@@ -48,18 +46,21 @@ export class AuthService {
 
     const tokenResponse = new Token();
     tokenResponse.token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: '24h',
+      expiresIn: '5s',
     });
     tokenResponse.refreshToken = jwt.sign(
       tokenPayload,
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '1w' },
+      { expiresIn: '10s' },
     );
 
     return tokenResponse;
   }
 
-  verifyToken(token: string): ICurrentUser {
+  verifyToken(token: string, refresh: boolean = false): ICurrentUser {
+    if (refresh) {
+      return this.checkToken(token, process.env.JWT_REFRESH_SECRET);
+    }
     return this.checkToken(token, process.env.JWT_SECRET);
   }
 
