@@ -6,14 +6,16 @@ import { ICurrentUser } from './interfaces/current-user.interface';
 import { Token } from './models/token.model';
 import { UserService } from '../user/user.service';
 import { Inject } from '@nestjs/common/decorators';
-import bcrypt, { compareSync } from 'bcrypt';
+import { compareSync } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
   constructor(@Inject(UserService) private readonly userService: UserService) {}
 
   async getToken(creadentials: LoginCredentials): Promise<Token> {
-    const user = await this.userService.findByName(creadentials.userName);
+    const user = await this.userService.findByNameOrEmail(
+      creadentials.userName,
+    );
 
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

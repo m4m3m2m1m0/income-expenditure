@@ -39,6 +39,7 @@ const Register = () => {
       try {
         await registerMut.mutateAsync(user);
         openInfoNotification('Your account has been created!');
+        setLoginRedirect(true);
       } catch ({ response }) {
         openErrorNotification(response.data.message);
       }
