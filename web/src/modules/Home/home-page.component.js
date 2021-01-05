@@ -5,12 +5,13 @@ import { useQuery } from 'react-query';
 import userQuery, {
   USER_QUERY_NAME,
 } from '../../shared/requests/user/userQuery';
+import TransactionList from '../TransactionList/transaction-list.component';
 
 const LoginContainer = styled.div`
   margin: auto;
-  width: 50%;
+  width: 100%;
   display: flex;
-  margin-top: 100px;
+  margin-top: 30px;
   flex-direction: column;
   align-items: center;
   background-color: white;
@@ -19,19 +20,9 @@ const LoginContainer = styled.div`
 `;
 
 const HomePage = () => {
-  const { data, refetch } = useQuery(USER_QUERY_NAME, userQuery, {
-    manual: true,
-  });
-
-  const onBtn = () => {
-    refetch();
-  };
-
   return (
     <LoginContainer>
-      <p>HI</p>
-      <Button onClick={onBtn}>Click</Button>
-      {JSON.stringify(data)}
+      <TransactionList />
     </LoginContainer>
   );
 };
