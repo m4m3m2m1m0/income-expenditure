@@ -1,4 +1,4 @@
-import { baseAPI } from '../../../components/api-client.component';
+import { baseAPI } from '../../components/api-client.component';
 
 export const USER_QUERY_NAME = 'userQuery';
 

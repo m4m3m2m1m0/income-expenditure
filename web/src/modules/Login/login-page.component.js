@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Input, Form, Space } from 'antd';
 import styled from 'styled-components';
 import { useMutation } from 'react-query';
-import loginMutation from '../../shared/api/requests/auth/loginMutation';
+import loginMutation from '../../shared/requests/auth/loginMutation';
 import { HOME_ROUTE, REGISTER_ROUTE } from '../../shared/const/routes.const';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../../contexts/auth.context';

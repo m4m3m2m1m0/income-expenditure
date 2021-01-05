@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { useQuery } from 'react-query';
 import userQuery, {
   USER_QUERY_NAME,
-} from '../../shared/api/requests/user/userQuery';
+} from '../../shared/requests/user/userQuery';
 
 const LoginContainer = styled.div`
   margin: auto;

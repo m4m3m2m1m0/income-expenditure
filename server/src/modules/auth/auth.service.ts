@@ -46,12 +46,12 @@ export class AuthService {
 
     const tokenResponse = new Token();
     tokenResponse.token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: '5s',
+      expiresIn: '1d',
     });
     tokenResponse.refreshToken = jwt.sign(
       tokenPayload,
       process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '10s' },
+      { expiresIn: '1w' },
     );
 
     return tokenResponse;

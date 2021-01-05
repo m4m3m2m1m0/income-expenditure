@@ -29,7 +29,7 @@ export class AuthGuard implements CanActivate {
 
     try {
       const user = this.authService.verifyToken(token);
-      console.log(user);
+
       if (!user) {
         return false;
       }

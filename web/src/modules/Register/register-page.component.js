@@ -2,9 +2,13 @@ import { Button, Input, Form, Space } from 'antd';
 import React, { useCallback, useState } from 'react';
 import { useMutation } from 'react-query';
 import styled from 'styled-components';
-import registerMutation from '../../shared/api/requests/user/registerMutation';
+import registerMutation from '../../shared/requests/user/registerMutation';
 import { LOGIN_ROUTE } from '../../shared/const/routes.const';
 import { Redirect } from 'react-router-dom';
+import {
+  openErrorNotification,
+  openInfoNotification,
+} from '../../shared/helpers/notifications.helper';
 
 const RegisterContainer = styled.div`
   width: 50%;
@@ -31,7 +35,16 @@ const Register = () => {
   const onFormSubmit = useCallback(
     async (user) => {
       delete user.confirmPassword;
-      await registerMut.mutate(user);
+
+      try {
+        debugger;
+        await registerMut.mutateAsync(user);
+        console.log(registerMut);
+        openInfoNotification('Your account has been created!');
+      } catch (e) {
+        console.log(e);
+        openErrorNotification(e.message);
+      }
     },
     [registerMut]
   );

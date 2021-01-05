@@ -6,15 +6,19 @@ const useLocalStorage = (key, initialValue) => {
     return item ? JSON.parse(item) : initialValue;
   });
 
-  const setValue = useCallback((value) => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
-    setStoredValue(valueToStore);
-    localStorage.setItem(key, JSON.stringify(valueToStore));
-  }, []);
+  const setValue = useCallback(
+    (value) => {
+      const valueToStore =
+        value instanceof Function ? value(storedValue) : value;
+      setStoredValue(valueToStore);
+      localStorage.setItem(key, JSON.stringify(valueToStore));
+    },
+    [key, storedValue]
+  );
 
   const removeValue = useCallback(() => {
     localStorage.removeItem(key);
-  }, []);
+  }, [key]);
 
   return [storedValue, setValue, removeValue];
 };

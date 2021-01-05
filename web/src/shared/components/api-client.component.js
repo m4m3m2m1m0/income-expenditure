@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { isExpired } from '../helpers/auth-token.helper';
 
@@ -16,7 +16,6 @@ let tokenInterceptorRef = null;
 
 const ApiClient = (props) => {
   const authContext = useContext(props.authContext);
-  const [init, setInit] = useState(true);
 
   const tokenInterceptor = useCallback(
     async (config) => {
@@ -68,7 +67,7 @@ const ApiClient = (props) => {
     );
 
     return () => {
-      if (tokenInterceptorRef) {
+      if (tokenInterceptorRef !== null) {
         baseAPI.interceptors.request.eject(tokenInterceptorRef);
       }
     };
