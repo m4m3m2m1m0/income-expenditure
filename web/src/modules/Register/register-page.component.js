@@ -37,13 +37,10 @@ const Register = () => {
       delete user.confirmPassword;
 
       try {
-        debugger;
         await registerMut.mutateAsync(user);
-        console.log(registerMut);
         openInfoNotification('Your account has been created!');
-      } catch (e) {
-        console.log(e);
-        openErrorNotification(e.message);
+      } catch ({ response }) {
+        openErrorNotification(response.data.message);
       }
     },
     [registerMut]

@@ -4,6 +4,8 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Post,
   Query,
   UseGuards,
@@ -20,8 +22,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   async getUsers(@Query('id') id: number): Promise<User | User[] | number> {
-    // return this.userService.findById(1);
-    return Math.random();
+    return this.userService.findById(id);
   }
 
   @Post('register')
