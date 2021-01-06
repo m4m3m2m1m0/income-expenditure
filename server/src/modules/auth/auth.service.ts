@@ -1,59 +1,79 @@
-import { LoginCredentials } from './models/login-creadentials.model';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { User } from 'src/database/entities/user.entity';
 import { ICurrentUser } from './interfaces/current-user.interface';
 import { Token } from './models/token.model';
 import { UserService } from '../user/user.service';
 import { Inject } from '@nestjs/common/decorators';
-import { compareSync } from 'bcrypt';
+import { compare } from 'bcrypt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { IPayload } from './interfaces/payload.interface';
 
 @Injectable()
 export class AuthService {
-  constructor(@Inject(UserService) private readonly userService: UserService) {}
+  constructor(
+    @Inject(UserService) private readonly userService: UserService,
+    @Inject(JwtService) private readonly jwtService: JwtService,
+  ) {}
 
-  async getToken(creadentials: LoginCredentials): Promise<Token> {
-    const user = await this.userService.findByNameOrEmail(
-      creadentials.userName,
-    );
+  private readonly tokenOptions: JwtSignOptions = {
+    secret: process.env.JWT_SECRET,
+    expiresIn: '3s',
+  };
+
+  private readonly refreshTokenOptions: JwtSignOptions = {
+    secret: process.env.JWT_REFRESH_SECRET,
+    expiresIn: '1d',
+  };
+
+  async validateUser(userName: string, password: string): Promise<User> {
+    const user = await this.userService.findByNameOrEmail(userName);
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new NotFoundException('User not found');
     }
 
-    if (!compareSync(creadentials.password, user.password)) {
-      throw new HttpException('Wrong password', HttpStatus.FORBIDDEN);
+    if (!(await compare(password, user.password))) {
+      throw new ForbiddenException('Wrong password');
     }
 
-    return this.generateToken(user);
+    return user;
   }
 
   async refreshToken(token: Token): Promise<Token> {
-    const payload = this.verifyToken(token.refreshToken, true);
+    try {
+      const payload: IPayload = await this.jwtService.verifyAsync(
+        token.refreshToken,
+        this.refreshTokenOptions,
+      );
 
-    const user = await this.userService.findById(payload.id);
+      const user = await this.userService.findById(payload.sub);
 
-    if (user) {
-      return this.generateToken(user);
+      if (user) {
+        return this.generateToken(user);
+      }
+    } catch (e) {
+      throw new ConflictException('Cannot refresh the token');
     }
-
-    throw new HttpException('Cannot refresh the token', HttpStatus.CONFLICT);
   }
 
   generateToken(user: User): Token {
-    const tokenPayload: ICurrentUser = {
-      id: user.id,
+    const tokenPayload: IPayload = {
+      sub: user.id,
       userName: user.userName,
     };
 
     const tokenResponse = new Token();
-    tokenResponse.token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
-      expiresIn: '1d',
-    });
-    tokenResponse.refreshToken = jwt.sign(
+
+    tokenResponse.token = this.jwtService.sign(tokenPayload, this.tokenOptions);
+    tokenResponse.refreshToken = this.jwtService.sign(
       tokenPayload,
-      process.env.JWT_REFRESH_SECRET,
-      { expiresIn: '1w' },
+      this.refreshTokenOptions,
     );
 
     return tokenResponse;

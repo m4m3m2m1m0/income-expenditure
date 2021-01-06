@@ -1,4 +1,3 @@
-import { LoginCredentials } from './models/login-creadentials.model';
 import {
   Body,
   ClassSerializerInterceptor,
@@ -6,9 +5,12 @@ import {
   Get,
   Inject,
   Post,
+  Req,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Token } from './models/token.model';
 
 @Controller('auth')
@@ -16,9 +18,10 @@ export class AuthController {
   constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   @Post('login')
+  @UseGuards(LocalAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
-  async login(@Body() credentials: LoginCredentials): Promise<Token> {
-    return this.authService.getToken(credentials);
+  async login(@Req() req): Promise<Token> {
+    return this.authService.generateToken(req.user);
   }
 
   @Post('refreshToken')
