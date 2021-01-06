@@ -1,9 +1,13 @@
 import { Button } from 'antd';
 import React, { useState, useCallback } from 'react';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import addTransactionMutation from '../../shared/requests/transaction/addTransactionMutation';
+import transactionQuery, {
+  TRANSACTION_QUERY_NAME,
+} from '../../shared/requests/transaction/transactionQuery';
 
 const TransactionList = () => {
+  const { data } = useQuery(TRANSACTION_QUERY_NAME, () => transactionQuery(1));
   const addTransMutation = useMutation(addTransactionMutation);
 
   const onAddTransaction = useCallback(async () => {
