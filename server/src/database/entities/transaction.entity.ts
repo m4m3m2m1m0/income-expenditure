@@ -1,4 +1,4 @@
-import { Exclude } from 'class-transformer';
+import { TransactionCategory } from './transaction-category.entity';
 import {
   Entity,
   Column,
@@ -16,8 +16,9 @@ export class Transaction {
 
   @Column({
     length: 255,
+    nullable: true,
   })
-  name: string;
+  description?: string;
 
   @Column()
   date: Date;
@@ -26,12 +27,23 @@ export class Transaction {
   amount: number;
 
   @Column()
+  typeId: number;
+
+  @Column()
   userId: number;
 
-  @ManyToOne(() => TransactionType, (type) => type.id)
+  @Column()
+  categoryId: number;
+
+  @ManyToOne(() => TransactionType)
+  @JoinColumn()
   type: TransactionType;
 
   @ManyToOne(() => User)
   @JoinColumn()
   user: User;
+
+  @ManyToOne(() => TransactionCategory)
+  @JoinColumn()
+  category: TransactionCategory;
 }

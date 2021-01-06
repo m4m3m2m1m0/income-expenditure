@@ -23,7 +23,6 @@ export class TransactionController {
     @Query('id') id: number,
     @CurrentUser() user: ICurrentUser,
   ): Promise<Transaction | Transaction[]> {
-    console.log(id, user);
     if (id) {
       return this.transactionService.get(id, user.id);
     }

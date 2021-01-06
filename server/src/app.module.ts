@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TransactionModule } from './modules/transaction/transaction.module';
+import { TransactionTypeModule } from './modules/transaction-type/transaction-type.module';
+import { TransactionCategoryModule } from './modules/transaction-category/transaction-category.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { TransactionModule } from './modules/transaction/transaction.module';
     UserModule,
     AuthModule,
     TransactionModule,
+    TransactionTypeModule,
+    TransactionCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
