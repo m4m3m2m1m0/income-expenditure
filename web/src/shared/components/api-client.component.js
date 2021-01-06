@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { isExpired } from '../helpers/auth-token.helper';
+import { openErrorNotification } from '../helpers/notifications.helper';
 
 const API_URL = 'http://192.168.1.154:5000'; //process.env.REACT_APP_API_URL;
 
@@ -11,6 +12,18 @@ const refreshAPI = axios.create({
 export const baseAPI = axios.create({
   baseURL: API_URL,
 });
+
+baseAPI.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error('✉️ ', error);
+
+    if (error.response && error.response.data)
+      openErrorNotification(error.response.data.message);
+
+    return Promise.reject(error);
+  }
+);
 
 let tokenInterceptorRef = null;
 

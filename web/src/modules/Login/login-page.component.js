@@ -6,7 +6,6 @@ import loginMutation from '../../shared/requests/auth/loginMutation';
 import { HOME_ROUTE, REGISTER_ROUTE } from '../../shared/const/routes.const';
 import { Redirect } from 'react-router-dom';
 import { AuthContext } from '../../contexts/auth.context';
-import { openErrorNotification } from '../../shared/helpers/notifications.helper';
 
 const LoginContainer = styled.div`
   margin: auto;
@@ -37,12 +36,8 @@ const LoginPage = () => {
 
   const onFormSubmit = useCallback(
     async (credentials) => {
-      try {
-        const response = await logMutation.mutateAsync(credentials);
-        authContext.login(response.data);
-      } catch ({ response }) {
-        openErrorNotification(response.data.message);
-      }
+      const response = await logMutation.mutateAsync(credentials);
+      authContext.login(response.data);
     },
     [authContext, logMutation]
   );

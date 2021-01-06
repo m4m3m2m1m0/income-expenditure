@@ -5,10 +5,7 @@ import styled from 'styled-components';
 import registerMutation from '../../shared/requests/user/registerMutation';
 import { LOGIN_ROUTE } from '../../shared/const/routes.const';
 import { Redirect } from 'react-router-dom';
-import {
-  openErrorNotification,
-  openInfoNotification,
-} from '../../shared/helpers/notifications.helper';
+import { openInfoNotification } from '../../shared/helpers/notifications.helper';
 
 const RegisterContainer = styled.div`
   width: 50%;
@@ -36,13 +33,9 @@ const Register = () => {
     async (user) => {
       delete user.confirmPassword;
 
-      try {
-        await registerMut.mutateAsync(user);
-        openInfoNotification('Your account has been created!');
-        setLoginRedirect(true);
-      } catch ({ response }) {
-        openErrorNotification(response.data.message);
-      }
+      await registerMut.mutateAsync(user);
+      openInfoNotification('Your account has been created!');
+      setLoginRedirect(true);
     },
     [registerMut]
   );

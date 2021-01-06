@@ -1,10 +1,7 @@
 import { Button } from 'antd';
 import React, { useState, useCallback } from 'react';
 import { useMutation, useQuery } from 'react-query';
-import {
-  openErrorNotification,
-  openInfoNotification,
-} from '../../shared/helpers/notifications.helper';
+import { openInfoNotification } from '../../shared/helpers/notifications.helper';
 import addTransactionMutation from '../../shared/requests/transaction/addTransactionMutation';
 import transactionQuery, {
   TRANSACTION_QUERY_NAME,
@@ -31,12 +28,8 @@ const TransactionList = () => {
     async (transaction) => {
       setIsAddTransactionModalVisible(false);
 
-      try {
-        const response = await addTransMutation.mutateAsync(transaction);
-        openInfoNotification('Transaction has been added');
-      } catch (e) {
-        openErrorNotification(e.response.data.message);
-      }
+      const response = await addTransMutation.mutateAsync(transaction);
+      openInfoNotification('Transaction has been added');
     },
     [addTransMutation]
   );
