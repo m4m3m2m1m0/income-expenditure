@@ -4,7 +4,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToOne,
   JoinColumn,
 } from 'typeorm';
 import { TransactionType } from './transaction-type.entity';
@@ -23,13 +22,16 @@ export class Transaction {
   @Column()
   date: Date;
 
-  @Column()
+  @Column({ type: 'float' })
   amount: number;
+
+  @Column()
+  userId: number;
 
   @ManyToOne(() => TransactionType, (type) => type.id)
   type: TransactionType;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User;
 }

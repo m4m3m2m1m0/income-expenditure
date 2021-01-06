@@ -14,21 +14,17 @@ import { User } from 'src/database/entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('user')
+@UseInterceptors(ClassSerializerInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(ClassSerializerInterceptor)
-  async getUsers(
-    @Query('id') id: number,
-    @Req() req,
-  ): Promise<User | User[] | number> {
+  async getUsers(@Query('id') id: number): Promise<User | User[] | number> {
     return this.userService.findById(id);
   }
 
   @Post('register')
-  @UseInterceptors(ClassSerializerInterceptor)
   async registerUser(@Body() user: User): Promise<void> {
     return this.userService.addUser(user);
   }

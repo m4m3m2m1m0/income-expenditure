@@ -1,19 +1,44 @@
 import { TransactionService } from './transaction.service';
 import { Transaction } from './../../database/entities/transaction.entity';
 import { Body, Controller, Inject, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '../auth/guards/auth.guard';
-import { User } from 'src/database/entities/user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
+import { ICurrentUser } from '../auth/interfaces/current-user.interface';
+import { Get } from '@nestjs/common/decorators/http';
+import { Query } from '@nestjs/common';
+import { ClassSerializerInterceptor } from '@nestjs/common';
+import { UseInterceptors } from '@nestjs/common';
 
 @Controller('transaction')
-@UseGuards(AuthGuard)
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class TransactionController {
   constructor(
     @Inject(TransactionService)
     private readonly transactionService: TransactionService,
   ) {}
 
+  @Get()
+  async getTransactions(
+    @Query('id') id: number,
+    @CurrentUser() user: ICurrentUser,
+  ): Promise<Transaction | Transaction[]> {
+    console.log(id, user);
+    if (id) {
+      return this.transactionService.get(id, user.id);
+    }
+
+    return this.transactionService.getTransactions(user.id);
+  }
+
   @Post()
-  async addTransaction(@Body() transaction: Transaction): Promise<void> {
-    return this.transactionService.add(transaction);
+  async addTransaction(
+    @Body() transaction: Transaction,
+    @CurrentUser() user: ICurrentUser,
+  ): Promise<number> {
+    transaction.date = new Date();
+    transaction.userId = user.id;
+
+    return await this.transactionService.add(transaction);
   }
 }
