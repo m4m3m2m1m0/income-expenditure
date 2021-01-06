@@ -4,24 +4,26 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Post,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { User } from 'src/database/entities/user.entity';
-import { AuthGuard } from '../auth/guards/auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(AuthGuard)
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
-  async getUsers(@Query('id') id: number): Promise<User | User[] | number> {
+  async getUsers(
+    @Query('id') id: number,
+    @Req() req,
+  ): Promise<User | User[] | number> {
     return this.userService.findById(id);
   }
 
