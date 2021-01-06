@@ -32,10 +32,6 @@ const LoginPage = () => {
   );
   const [registerRedirect, setRegisterRedirect] = useState(false);
 
-  // useEffect(() => {
-  //   setRedirectToHomePage(authContext.isAuth);
-  // }, [authContext, redirectToHomePage]);
-
   const onFormSubmit = useCallback(
     async (credentials) => {
       const response = await logMutation.mutateAsync(credentials);
