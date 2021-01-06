@@ -27,17 +27,20 @@ const LoginPage = () => {
   const [form] = Form.useForm();
   const logMutation = useMutation(loginMutation);
   const authContext = useContext(AuthContext);
-  const [redirectToHomePage, setRedirectToHomePage] = useState(false);
+  const [redirectToHomePage, setRedirectToHomePage] = useState(
+    authContext.isAuth
+  );
   const [registerRedirect, setRegisterRedirect] = useState(false);
 
-  useEffect(() => {
-    setRedirectToHomePage(authContext.isAuth);
-  }, [authContext, redirectToHomePage]);
+  // useEffect(() => {
+  //   setRedirectToHomePage(authContext.isAuth);
+  // }, [authContext, redirectToHomePage]);
 
   const onFormSubmit = useCallback(
     async (credentials) => {
       const response = await logMutation.mutateAsync(credentials);
       authContext.login(response.data);
+      setRedirectToHomePage(true);
     },
     [authContext, logMutation]
   );
