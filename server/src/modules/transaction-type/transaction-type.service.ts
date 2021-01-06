@@ -11,7 +11,6 @@ export class TransactionTypeService {
   ) {}
 
   async getTypes(): Promise<TransactionType[]> {
-    throw new NotFoundException('test');
     return this.transactionTypesRepository.find();
   }
 }
