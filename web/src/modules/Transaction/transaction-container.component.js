@@ -1,15 +1,15 @@
-import { Button } from 'antd';
+import { Button, Tabs } from 'antd';
 import React, { useState, useCallback } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import { openInfoNotification } from '../../shared/helpers/notifications.helper';
 import addTransactionMutation from '../../shared/requests/transaction/addTransactionMutation';
-import transactionQuery, {
-  TRANSACTION_QUERY_NAME,
-} from '../../shared/requests/transaction/transactionQuery';
-import AddTransactionModal from '../NewTransactionModal/new-transaction-modal.component';
+import AddTransactionModal from './new-transaction-modal.component';
+import TransactionList from './transaction-list.component';
+import { TRANSACTION_QUERY_NAME } from '../../shared/requests/transaction/transactionQuery';
 
-const TransactionList = () => {
-  const { data } = useQuery(TRANSACTION_QUERY_NAME, transactionQuery);
+const TransactionContainer = () => {
+  const queryClient = useQueryClient();
+
   const addTransMutation = useMutation(addTransactionMutation);
   const [
     isAddTransactionModalVisible,
@@ -28,7 +28,9 @@ const TransactionList = () => {
     async (transaction) => {
       setIsAddTransactionModalVisible(false);
 
-      const response = await addTransMutation.mutateAsync(transaction);
+      await addTransMutation.mutateAsync(transaction);
+      queryClient.refetchQueries([TRANSACTION_QUERY_NAME + transaction.typeId]);
+
       openInfoNotification('Transaction has been added');
     },
     [addTransMutation]
@@ -36,6 +38,15 @@ const TransactionList = () => {
 
   return (
     <div>
+      <Tabs defaultActiveKey="1">
+        <Tabs.TabPane tab="Expenditure" key="1">
+          <TransactionList transactionTypeId="1" />
+        </Tabs.TabPane>
+
+        <Tabs.TabPane tab="Income" key="2">
+          <TransactionList transactionTypeId="2" />
+        </Tabs.TabPane>
+      </Tabs>
       <Button onClick={onAddTransaction}>Add</Button>
       <AddTransactionModal
         visible={isAddTransactionModalVisible}
@@ -46,4 +57,4 @@ const TransactionList = () => {
   );
 };
 
-export default TransactionList;
+export default TransactionContainer;

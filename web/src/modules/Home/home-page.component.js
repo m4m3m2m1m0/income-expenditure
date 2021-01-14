@@ -5,7 +5,7 @@ import { useQuery } from 'react-query';
 import userQuery, {
   USER_QUERY_NAME,
 } from '../../shared/requests/user/userQuery';
-import TransactionList from '../TransactionList/transaction-list.component';
+import TransactionContainer from '../Transaction/transaction-container.component';
 
 const LoginContainer = styled.div`
   margin: auto;
@@ -22,7 +22,7 @@ const LoginContainer = styled.div`
 const HomePage = () => {
   return (
     <LoginContainer>
-      <TransactionList />
+      <TransactionContainer />
     </LoginContainer>
   );
 };

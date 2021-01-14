@@ -8,6 +8,8 @@ import { Get } from '@nestjs/common/decorators/http';
 import { Query } from '@nestjs/common';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { UseInterceptors } from '@nestjs/common';
+import { GetTransactionParams } from './models/get-transaction.params';
+import { TransactionPageModel } from './models/transaction-page.model';
 
 @Controller('transaction')
 @UseGuards(JwtAuthGuard)
@@ -20,24 +22,20 @@ export class TransactionController {
 
   @Get()
   async getTransactions(
-    @Query('id') id: number,
+    @Query() params: GetTransactionParams,
     @CurrentUser() user: ICurrentUser,
-  ): Promise<Transaction | Transaction[]> {
-    if (id) {
-      return this.transactionService.get(id, user.id);
-    }
-
-    return this.transactionService.getTransactions(user.id);
+  ): Promise<TransactionPageModel> {
+    return this.transactionService.getTransactions(params, user.id);
   }
 
   @Post()
   async addTransaction(
     @Body() transaction: Transaction,
     @CurrentUser() user: ICurrentUser,
-  ): Promise<number> {
+  ): Promise<Transaction> {
     transaction.date = new Date();
     transaction.userId = user.id;
 
-    return await this.transactionService.add(transaction);
+    return this.transactionService.add(transaction);
   }
 }
