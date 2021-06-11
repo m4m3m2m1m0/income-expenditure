@@ -23,12 +23,12 @@ export class AuthService {
 
   private readonly tokenOptions: JwtSignOptions = {
     secret: process.env.JWT_SECRET,
-    expiresIn: '1d',
+    expiresIn: '5s',
   };
 
   private readonly refreshTokenOptions: JwtSignOptions = {
     secret: process.env.JWT_REFRESH_SECRET,
-    expiresIn: '1w',
+    expiresIn: '1d',
   };
 
   async validateUser(userName: string, password: string): Promise<User> {

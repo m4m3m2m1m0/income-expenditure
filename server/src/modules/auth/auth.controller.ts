@@ -21,6 +21,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   async login(@Req() req): Promise<Token> {
+    console.log(req);
     return this.authService.generateToken(req.user);
   }
 

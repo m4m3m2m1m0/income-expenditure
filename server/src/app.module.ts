@@ -12,7 +12,7 @@ import { TransactionCategoryModule } from './modules/transaction-category/transa
   imports: [
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: '192.168.1.154',
+      host: '192.168.1.167',
       port: 1433,
       username: 'sa',
       password: 'Password1',

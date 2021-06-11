@@ -22,7 +22,7 @@ export class UserService {
         HttpStatus.CONFLICT,
       );
     }
-
+    console.log(user);
     var hashedPassword = hashSync(user.password, 10);
     user.password = hashedPassword;
 

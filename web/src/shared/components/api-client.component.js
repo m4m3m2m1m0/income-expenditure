@@ -3,7 +3,7 @@ import axios from 'axios';
 import { isExpired } from '../helpers/auth-token.helper';
 import { openErrorNotification } from '../helpers/notifications.helper';
 
-const API_URL = 'http://192.168.1.154:5000'; //process.env.REACT_APP_API_URL;
+const API_URL = process.env.REACT_APP_API_URL;
 
 const refreshAPI = axios.create({
   baseURL: API_URL,

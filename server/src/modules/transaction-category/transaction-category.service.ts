@@ -13,4 +13,10 @@ export class TransactionCategoryService {
   async getCategories(): Promise<TransactionCategory[]> {
     return this.transactionCategoryRepository.find();
   }
+
+  async addCategory(
+    category: TransactionCategory,
+  ): Promise<TransactionCategory> {
+    return null;
+  }
 }

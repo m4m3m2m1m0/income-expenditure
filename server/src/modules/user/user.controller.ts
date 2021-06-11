@@ -26,6 +26,7 @@ export class UserController {
 
   @Post('register')
   async registerUser(@Body() user: User): Promise<void> {
+    console.log(user);
     return this.userService.addUser(user);
   }
 }

@@ -5,6 +5,9 @@ export class TransactionCategory {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
+  parentCategoryId: number;
+
   @Column({
     length: 255,
   })

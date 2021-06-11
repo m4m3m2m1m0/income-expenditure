@@ -19,6 +19,6 @@ export class User {
   @Column({
     length: 255,
   })
-  @Exclude()
+  // @Exclude()
   password: string;
 }
